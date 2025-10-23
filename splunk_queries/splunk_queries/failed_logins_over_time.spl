@@ -1,0 +1,2 @@
+index=main source="auth_log_fixed.csv" result="failure"
+| timechart span=1h count by user
