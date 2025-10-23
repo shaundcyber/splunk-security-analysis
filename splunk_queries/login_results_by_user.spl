@@ -1,0 +1,2 @@
+index=main (source="auth_log_fixed.csv" OR source="mfa_event.csv")
+| stats count by user, result
