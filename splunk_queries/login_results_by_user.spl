@@ -1,2 +1,10 @@
-index=main (source="auth_log_fixed.csv" OR source="mfa_event.csv")
-| stats count by user, result
+# login_results_by_user.spl
+# Purpose: Analyze login results by user to identify success/failure trends across the environment.
+
+index=security OR index=auth sourcetype=linux_secure OR sourcetype=windows_security
+| eval status=if(searchmatch("Failed password") OR searchmatch("Logon Failure"), "failed", "success")
+| stats count by user, status
+| eventstats sum(count) AS total by user
+| eval percent=round((count / total) * 100, 2)
+| sort -total
+| rename user AS "Username", status AS "Login Status", count AS "Attempt Count", total AS "Total Attempts", percent AS "Percent of Total"
